@@ -1,6 +1,6 @@
 import React from 'react';
 import Table from "react-bootstrap/Table";
-import { map } from 'lodash';
+import { Section } from '../GildedRose';
 
 export interface Item {
     name: string;
@@ -9,11 +9,18 @@ export interface Item {
 }
 
 interface ShopItemTableProps {
-    items: Item[]
+    items: Item[];
+    section: string;
 }
 
-function getItemRows(items: Item[]) {
-    return map(items, (item: Item) => {
+function getItemRows(items: Item[], section: string) {
+    let filteredItems = [];
+    if(section === Section.SALE){
+        filteredItems = items.filter(item => item.quality > 0 && item.sellIn > 0);
+    }else{
+        filteredItems = items.filter(item => item.quality <= 0 || item.sellIn <= 0)
+    }
+    return filteredItems.map((item: Item) => {
         return (
             <tr className="item-row">
                 <td>{item.name}</td>
@@ -26,7 +33,7 @@ function getItemRows(items: Item[]) {
 
 function ShopItemTable(props: ShopItemTableProps) {
     const { items } = props;
-
+    
     return (
         <Table striped bordered hover>
             <thead>
@@ -37,7 +44,7 @@ function ShopItemTable(props: ShopItemTableProps) {
             </tr>
             </thead>
             <tbody>
-            {getItemRows(items)}
+            {getItemRows(items, props.section)}
             </tbody>
         </Table>
     );

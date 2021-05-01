@@ -13,6 +13,10 @@ import Tabs from "react-bootstrap/Tabs";
 import Card from "react-bootstrap/Card";
 import WelcomeMessage from "./components/WelcomeMessage";
 
+export enum Section{
+    SALE ="Sale",
+    DISCOUNT ="Discount"
+}
 interface Props {}
 
 interface State {
@@ -22,6 +26,7 @@ interface State {
 const shop = new Shop(items);
 
 class GildedRose extends React.Component<Props, State> {
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -60,11 +65,13 @@ class GildedRose extends React.Component<Props, State> {
                             <Tabs defaultActiveKey="sale" id="uncontrolled-tab-example">
                                 <Tab eventKey="sale" title="On Sale">
                                     <Card>
-                                        <ShopItemTable items={this.state.items}/>
+                                        <ShopItemTable items={this.state.items} section={Section.SALE}/>
                                     </Card>
                                 </Tab>
                                 <Tab eventKey="discount" title="Discount">
-                                    Coming soon...
+                                    <Card>
+                                        <ShopItemTable items={this.state.items} section={Section.DISCOUNT}/>
+                                    </Card>
                                 </Tab>
                             </Tabs>
                             <Button onClick={this.updateShowQuality.bind(this)}>Update Quality</Button>
