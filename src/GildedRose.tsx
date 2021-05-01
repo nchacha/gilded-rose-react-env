@@ -20,7 +20,9 @@ export enum Section{
 interface Props {}
 
 interface State {
-    items: Item[]
+    items: Item[],
+    onSaleItems: number,
+    discountItems: number
 }
 
 const shop = new Shop(items);
@@ -30,7 +32,9 @@ class GildedRose extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            items: shop.items
+            items: shop.items,
+            onSaleItems: shop.items.length,
+            discountItems: 0
         };
         console.log('Initial Shop state: ', this.state.items)
     }
@@ -38,13 +42,18 @@ class GildedRose extends React.Component<Props, State> {
     updateShowQuality() {
         shop.updateQuality();
         console.log('Shop State after update:', shop)
-
+        let onSaleCount = shop.items.filter(item => item.quality > 0 && item.sellIn > 0).length;
         this.setState({
-            items: shop.items
+            items: shop.items,
+            onSaleItems: onSaleCount,
+            discountItems: shop.items.length - onSaleCount
         })
     }
 
     render() {
+        let onSaleTab = "On Sale " + "("+ this.state.onSaleItems + ")";
+        let discountTab ="Discount " + "("+ this.state.discountItems + ")";
+
         return (
             <div className="App">
                 <Container>
@@ -63,12 +72,12 @@ class GildedRose extends React.Component<Props, State> {
                     <Row>
                         <Col>
                             <Tabs defaultActiveKey="sale" id="uncontrolled-tab-example">
-                                <Tab eventKey="sale" title="On Sale">
+                                <Tab eventKey="sale" title={onSaleTab}>
                                     <Card>
                                         <ShopItemTable items={this.state.items} section={Section.SALE}/>
                                     </Card>
                                 </Tab>
-                                <Tab eventKey="discount" title="Discount">
+                                <Tab eventKey="discount" title={discountTab}>
                                     <Card>
                                         <ShopItemTable items={this.state.items} section={Section.DISCOUNT}/>
                                     </Card>
